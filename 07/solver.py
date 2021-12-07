@@ -6,7 +6,6 @@ def crab_pos(input_path):
     with open(input_path, "r") as file:
         for x in file.readline().split(","):
             crab_list.append(int(x))
-    # build a lsg and minnimize?
     fuel_best = len(crab_list)*len(crab_list)
     for i in range(len(crab_list)):
         fuel_temp = 0
@@ -24,7 +23,6 @@ def crab_pos2(input_path):
     with open(input_path, "r") as file:
         for x in file.readline().split(","):
             crab_list.append(int(x))
-    # build a lsg and minnimize?
     fuel_best = None
     for i in range(len(crab_list)):
         fuel_temp = 0
