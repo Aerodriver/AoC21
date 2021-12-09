@@ -1,9 +1,11 @@
+
 def height_map(input_path):
     res = []
     with open(input_path, "r") as file:
         for line in file:
             res.append(list(map(int, line.strip())))
     return res
+
 
 def part1(input_path):
     # naive solution
@@ -14,6 +16,7 @@ def part1(input_path):
     for i in range(len(hmap)):
         for j in range(len(hmap[i])):
             val = hmap[i][j]
+            #the sea of if and ifs
             if i == 0:
                 if j == 0:
                     if val < hmap[i+1][j] and val < hmap[i][j+1] :
@@ -28,7 +31,6 @@ def part1(input_path):
                 if j == 0:
                     if (val < hmap[i-1][j]) and (val < hmap[i][j+1]) :
                         sum_of_rlevels = sum_of_rlevels + val+1
-
                 elif j == rbound:
                     if (val < hmap[i-1][j]) and (val < hmap[i][j-1]) :
                         sum_of_rlevels = sum_of_rlevels + val+1
@@ -38,17 +40,14 @@ def part1(input_path):
             elif j == 0:
                 if (val < hmap[i-1][j]) and (val < hmap[i+1][j]) and (val < hmap[i][j+1]) : 
                         sum_of_rlevels = sum_of_rlevels + val+1
-
             elif j == rbound:
                 if (val < hmap[i-1][j]) and (val < hmap[i+1][j]) and (val < hmap[i][j-1]) :
                         sum_of_rlevels = sum_of_rlevels + val+1
-                    
             else:
                 if (val < hmap[i-1][j]) and (val < hmap[i][j-1]) and (val < hmap[i+1][j]) and (val < hmap[i][j+1]) :
                     sum_of_rlevels = sum_of_rlevels + val+1
-                    
-            
     return sum_of_rlevels
+
 
 class Basin():
     def __init__(self, positions):
@@ -79,7 +78,6 @@ def build_a_basin(pos, field, rbound ,dbound):
         if len(tmp_pos) != 0 :
             changes = True
         new_pos = tmp_pos
-    
     return Basin(positions)
 
 
@@ -91,17 +89,10 @@ def basin_finder(input_path):
     dbound = len(hmap)-1
     for i in range(len(hmap)):
         for j in range(len(hmap[i])):
-            #print(i,j,len(hmap))
             if hmap[i][j] != 9 and not (i,j) in basin_posses:
                 basin = build_a_basin((i,j), hmap, rbound, dbound)
                 for p in basin.positions:
                     basin_posses.add(p)
                 basins.append(basin)
     basins.sort(key = lambda x: x.size)
-    #print([b.size for b in basins])
     return basins[-1].size * basins[-2].size * basins[-3].size
-
-#print(part1("testinput.txt"))
-#print(part1("input.txt"))
-print(basin_finder("input.txt"))
-
