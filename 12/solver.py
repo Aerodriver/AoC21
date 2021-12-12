@@ -11,7 +11,7 @@ class CaveSystem:
     def find_paths(self, repeat=False): # repeat allows one small cave to appear twice on a path
         paths = [[0, self.start]] # first element shows if a small cave has been visited more than once; 0 = no, 1 = yes
         final_paths_nr = 0
-        while paths :
+        while paths : # memory? I hardly even knew her.
             tmp_paths = []
             for path in paths :
                 for neighbour in self.neighbours[path[-1]] :
