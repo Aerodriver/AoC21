@@ -2,60 +2,27 @@
 class CaveSystem:
     start = "start"
     end = "end"
+    
     def __init__(self, connections = []):
-        self.connections = set(connections) #tupels of connected caves
+        #self.connections = connections
+        self.neighbours = {x[0]:[y[1] for y in connections if y[0]==x[0]] for x in connections} #build a dict to quickly look up neighbours
 
-    def twobig(self):
-        return len([c for c in connections if (c[0].isupper() and c[1].isupper())])
 
-    def find_paths_1(self):
-        paths = [[self.start]] # list of paths
-        final_paths = []
-        changes = True
-        while changes :
-            changes = False
+    def find_paths(self, repeat=False): # repeat allows one small cave to appear twice on a path
+        paths = [[0, self.start]] # first element shows if a small cave has been visited more than once; 0 = no, 1 = yes
+        final_paths_nr = 0
+        while paths :
             tmp_paths = []
             for path in paths :
-                #print(path)
-                for neighbour in [x[1] for x in self.connections if x[0] == path[-1]] :
+                for neighbour in self.neighbours[path[-1]] :
                     if neighbour == self.end:
-                        tmp_path = path.copy()
-                        tmp_path.append(neighbour)
-                        final_paths.append(tmp_path)
-                    elif (neighbour.isupper()) or not (neighbour in path) :
-                        tmp_path = path.copy()
-                        tmp_path.append(neighbour)
-                        tmp_paths.append(tmp_path)
-                        changes = True
-            paths = tmp_paths
-        return final_paths
-
-    def find_paths_2(self): #extremly naiv approach but it works
-        paths = [[0, self.start]] # first element shows if a small cave has been visited more than once, 0 = no, 1 = yes
-        final_paths = []
-        changes = True
-        while changes :
-            changes = False
-            tmp_paths = []
-            for path in paths :
-                for neighbour in [x[1] for x in self.connections if x[0] == path[-1]] :
-                    if neighbour == self.end:
-                        tmp_path = path.copy()
-                        tmp_path.append(neighbour)
-                        final_paths.append(tmp_path)
+                        final_paths_nr += 1
                     elif neighbour.isupper() or not neighbour in path:
-                        tmp_path = path.copy()
-                        tmp_path.append(neighbour)
-                        tmp_paths.append(tmp_path)
-                        changes = True
-                    elif neighbour!= self.start and path[0] == 0:
-                        tmp_path = path.copy()
-                        tmp_path.append(neighbour)
-                        tmp_path[0] = 1
-                        tmp_paths.append(tmp_path)
-                        changes = True
+                        tmp_paths.append(path+[neighbour])
+                    elif repeat and path[0] == 0 and neighbour!= self.start:
+                        tmp_paths.append([1]+path[1:]+[neighbour])
             paths = tmp_paths
-        return final_paths
+        return final_paths_nr
 
 
 def cave_builder(input_file):
@@ -63,7 +30,7 @@ def cave_builder(input_file):
     with open(input_file, "r") as file:
         for line in file:
             a, b = line.strip().split("-")
-            connections.add((a,b))
+            connections.add((a,b)) # add both ways
             connections.add((b,a))
     cs = CaveSystem(connections)
     return cs
@@ -71,13 +38,13 @@ def cave_builder(input_file):
 
 def part1(input_file):
     cs = cave_builder(input_file)
-    return len(cs.find_paths_1())
+    return cs.find_paths()
 
 
 def part2(input_file):
     cs = cave_builder(input_file)
-    return len(cs.find_paths_2())
+    return cs.find_paths(True)
 
-        
+
 print(part1("input.txt"))
 print(part2("input.txt"))
